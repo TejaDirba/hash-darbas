@@ -168,6 +168,8 @@ Testavimas atliekamas su atsitiktiniais string'ais. Kiekvienas testas kartojamas
 
 **Išvada:** [užpildyti po testavimo]
 
+<img width="823" height="520" alt="Screenshot 2025-10-01 233619" src="https://github.com/user-attachments/assets/c46b2d9b-d64f-4eab-a0ff-7fa4bda14d8f" />
+
 ---
 
 ### 4. Kolizijų Paieška
