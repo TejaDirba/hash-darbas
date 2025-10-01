@@ -41,3 +41,47 @@ private:
         a = rotateLeft(a, 41);
         return a;
     }
+}
+public:
+    static string hash(const string& input) {
+        uint64_t h1 = INIT_A;
+        uint64_t h2 = INIT_B;
+        uint64_t h3 = INIT_C;
+        uint64_t h4 = INIT_D;
+        
+        size_t len = input.length();
+        
+        // Apdorojame kiekvieną baitą
+        for (size_t i = 0; i < len; i++) {
+            uint64_t byte_val = static_cast<uint64_t>(static_cast<unsigned char>(input[i]));
+            uint64_t position = i + 1;
+            
+            // Pridedame pozicijos įtaką (lavinos efektui)
+            byte_val ^= position * PRIME1;
+            
+            // Atnaujiname state'us rotacijos principu
+            h1 ^= byte_val * PRIME1;
+            h1 = rotateLeft(h1, 13);
+            h1 *= PRIME2;
+            
+            h2 ^= byte_val * PRIME2;
+            h2 = rotateRight(h2, 17);
+            h2 += h1;
+            
+            h3 ^= byte_val * PRIME3;
+            h3 = rotateLeft(h3, 31);
+            h3 ^= h2;
+            
+            h4 ^= byte_val * PRIME4;
+            h4 = rotateRight(h4, 19);
+            h4 += h3;
+            
+            // Tarpusavio maišymas kas 4 baitus
+            if (i % 4 == 3) {
+                h1 = mix(h1, h2, h3);
+                h2 = mix(h2, h3, h4);
+                h3 = mix(h3, h4, h1);
+                h4 = mix(h4, h1, h2);
+            }
+        }
+ 
