@@ -1,1 +1,43 @@
+#include <iostream>
+#include <fstream>
+#include <sstream>
 #include <iomanip>
+#include <string>
+#include <cstdint>
+#include <vector>
+#include <chrono>
+
+using namespace std;
+
+class CustomHash {
+private:
+    // Pradiniai state'ai (prime numbers)
+    static const uint64_t INIT_A = 0x428a2f98d728ae22ULL;
+    static const uint64_t INIT_B = 0x7137449123ef65cdULL;
+    static const uint64_t INIT_C = 0xb5c0fbcfec4d3b2fULL;
+    static const uint64_t INIT_D = 0xe9b5dba58189dbbcULL;
+    
+    // Pirminiai skaičiai maišymui
+    static const uint64_t PRIME1 = 0x9e3779b185ebca87ULL;
+    static const uint64_t PRIME2 = 0xc2b2ae3d27d4eb4fULL;
+    static const uint64_t PRIME3 = 0x165667b19e3779f9ULL;
+    static const uint64_t PRIME4 = 0x85ebca77c2b2ae63ULL;
+    
+    //Rotacijos funkcija
+     static uint64_t rotateLeft(uint64_t value, int shift) {
+        return (value << shift) | (value >> (64 - shift));
+    }
+    
+    static uint64_t rotateRight(uint64_t value, int shift) {
+        return (value >> shift) | (value << (64 - shift));
+    }
+    
+    // Maišymo funkcija
+    static uint64_t mix(uint64_t a, uint64_t b, uint64_t c) {
+        a ^= b;
+        a = rotateLeft(a, 23);
+        a *= PRIME1;
+        a ^= c;
+        a = rotateLeft(a, 41);
+        return a;
+    }
