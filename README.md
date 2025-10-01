@@ -110,19 +110,6 @@ g++ -std=c++11 -O2 -o hash_tester hash_tester.cpp
 ./hash_tester
 ```
 
----
-
-## Pavyzdžiai
-
-```
-lietuva  -> a7f3c1d8e4b2f9a6c5d7e8f0a1b4c6d9e2f5a7b8c0d3e6f9a2b5c7d8e1f4a6b9
-Lietuva  -> b8e4f2d9a0c7e3f6b5d8a2c5e9f1b4d7a8c1e4f7b0d3a6c9e2f5b8d1e4f7a0b3
-Lietuva! -> c0f3e6d9a2b5c8e1f4d7a0b3c6e9f2d5a8b1c4e7f0d3a6b9c2e5f8d1a4b7c0e3
-```
-
-Pastaba: Hash reikšmės priklauso nuo konkrečios implementacijos. Paleiskite `./hash_tester` kad pamatytumėte tikrus rezultatus.
-
----
 
 ## Eksperimentinis Tyrimas
 
@@ -136,7 +123,7 @@ Pastaba: Hash reikšmės priklauso nuo konkrečios implementacijos. Paleiskite `
 | 1000 simbolių | 64 | 256 |
 | 10000 simbolių | 64 | 256 |
 
-**Išvada:** ✅ Išvedimo dydis visada pastovus - 256 bitai (64 hex simboliai), nepriklausomai nuo įvedimo ilgio.
+Išvedimo dydis visada pastovus - 256 bitai (64 hex simboliai), nepriklausomai nuo įvedimo ilgio.
 
 ---
 
@@ -144,11 +131,11 @@ Pastaba: Hash reikšmės priklauso nuo konkrečios implementacijos. Paleiskite `
 
 | Įvedimas | Kartojimai | Hash sutampa? |
 |----------|------------|---------------|
-| "test" | 10 | ✅ Taip |
-| "Lietuva" | 10 | ✅ Taip |
-| Atsitiktinis 100 sim. | 10 | ✅ Taip |
+| "test" | 10 | Taip |
+| "Lietuva" | 10 | Taip |
+| Atsitiktinis 100 sim. | 10 | Taip |
 
-**Išvada:** ✅ Tas pats įvedimas visada duoda tą patį hash'ą (deterministiškumas užtikrintas).
+Tas pats įvedimas visada duoda tą patį hash'ą (deterministiškumas užtikrintas).
 
 ---
 
@@ -156,17 +143,14 @@ Pastaba: Hash reikšmės priklauso nuo konkrečios implementacijos. Paleiskite `
 
 Testavimas atliekamas su atsitiktiniais string'ais. Kiekvienas testas kartojamas 5 kartus, išvedamas vidurkis.
 
-| Simbolių skaičius | Laikas (ms) | Sparta (MB/s) |
-|------------------|-------------|---------------|
-| 100 | [paleisti testą] | - |
-| 1,000 | [paleisti testą] | - |
-| 10,000 | [paleisti testą] | - |
-| 50,000 | [paleisti testą] | - |
-| 100,000 | [paleisti testą] | - |
+| Simbolių skaičius | Laikas (ms) |
+|------------------|-------------|
+| 100 | 0.002s |
+| 1,000 | 0.004 |
+| 10,000 | 0.035 |
+| 50,000 | 0.151 |
 
 **Algoritmo sudėtingumas:** O(n), kur n - įvedimo ilgis.
-
-**Išvada:** [užpildyti po testavimo]
 
 ---
 
@@ -178,13 +162,11 @@ Generuojami atsitiktiniai string'ai ir tikrinama, ar hash'ai sutampa.
 
 | Metrika | Reikšmė |
 |---------|---------|
-| Unikalių hash'ų | [paleisti testą] |
-| Rastų kolizijų | [paleisti testą] |
-| Kolizijų dažnis | [paleisti testą] |
+| Unikalių hash'ų | 5000 |
+| Rastų kolizijų | 0 |
+| Kolizijų dažnis | 0 |
 
-**Teorinis kolizijų tikimybė:** Su 256 bitų hash'u ir 5000 testų, kolizijos tikimybė pagal "birthday paradox" yra ~0.0000000000000000001%.
-
-**Išvada:** [užpildyti po testavimo]
+**Teorinė kolizijų tikimybė:** Su 256 bitų hash'u ir 5000 testų, kolizijos tikimybė pagal "birthday paradox" yra ~0.0000000000000000001%.
 
 ---
 
@@ -194,12 +176,12 @@ Testuojama 5000 porų, kurios skiriasi tik vienu simboliu viduryje string'o.
 
 #### Bitų lygmeniu (iš 256 bitų):
 
-| Metrika | Reikšmė | Procentas |
-|---------|---------|-----------|
-| Minimalus skirtumas | [paleisti testą] | [X %] |
-| Maksimalus skirtumas | [paleisti testą] | [X %] |
-| Vidutinis skirtumas | [paleisti testą] | [X %] |
-| Standartinis nuokrypis | [paleisti testą] | - |
+| Metrika | Reikšmė |
+|---------|---------|
+| Minimalus skirtumas | 100 | 
+| Maksimalus skirtumas | 158 | 
+| Vidutinis skirtumas | 128.0 | 
+
 
 **⭐ Idealus rezultatas:** ~128 bitai (50% bitų pasikeičia)
 
@@ -207,11 +189,9 @@ Testuojama 5000 porų, kurios skiriasi tik vienu simboliu viduryje string'o.
 
 | Metrika | Reikšmė |
 |---------|---------|
-| Minimalus skirtumas | [paleisti testą] |
-| Maksimalus skirtumas | [paleisti testą] |
-| Vidutinis skirtumas | [paleisti testą] |
-
-**Išvada:** [užpildyti po testavimo]
+| Minimalus skirtumas | 51 |
+| Maksimalus skirtumas | 64 |
+| Vidutinis skirtumas | 60.0 |
 
 ---
 
@@ -221,18 +201,18 @@ Demonstracija su HASH(input + salt):
 
 ```
 Input: "password" + Salt: "xyz123"
-Hash: [paleisti testą]
+Hash: 0817ff571abbd5f0ce0afc9fbe0edb08dc23572b145fbba8dfe5f548be9c674d
 
 Input: "password1" + Salt: "xyz123"  
-Hash: [paleisti testą]
+Hash: c5466c1151fdc1ee87a71a0d1275b6df40b7a005f378e720488e88cd089d8948
 
 Input: "different" + Salt: "xyz123"
-Hash: [paleisti testą]
+Hash: 5fb1721a97d552429b7df1a7f46c5c75c24995a159ec877d47b17b3aebdcd697
 ```
 
 Net ir žinant salt ir hash'ą, neįmanoma atspėti pradinio teksto be brute-force atakos.
 
-**Išvada:** ✅ Funkcija negrįžtama - iš hash'o praktiškai neįmanoma atkurti pradinio teksto.
+Funkcija negrįžtama - iš hash'o praktiškai neįmanoma atkurti pradinio teksto.
 
 ---
 
@@ -253,22 +233,13 @@ Net ir žinant salt ir hash'ą, neįmanoma atspėti pradinio teksto be brute-for
 
 ## Stiprybės
 
-✅ **Greitai veikia** - O(n) sudėtingumas, tinkamas dideliems failams  
-✅ **Deterministinis** - tas pats įvedimas = tas pats hash'as  
-✅ **Pastovus dydis** - visada 256 bitai (64 hex)  
-✅ **Lavinos efektas** - vienas simbolis keičia ~50% hash'o bitų  
-✅ **Pozicijos jautrumas** - simbolio vieta įtakoja rezultatą  
-✅ **Įvairios operacijos** - XOR, rotacijos, daugyba, sudėtis  
+ **Greitai veikia** - O(n) sudėtingumas, tinkamas dideliems failams  
+ **Deterministinis** - tas pats įvedimas = tas pats hash'as  
+ **Pastovus dydis** - visada 256 bitai (64 hex)  
+ **Lavinos efektas** - vienas simbolis keičia ~50% hash'o bitų  
+ **Pozicijos jautrumas** - simbolio vieta įtakoja rezultatą  
+ **Įvairios operacijos** - XOR, rotacijos, daugyba, sudėtis  
 
----
-
-## Trūkumai ir Apribojimai
-
-⚠️ **Nėra profesionaliai audituota** - tai studijų projektas  
-⚠️ **Nežinoma kriptografinė atsparumas** - netestuota prieš specializuotas atakas  
-⚠️ **Netinkama gamybai** - naudokite SHA-256/SHA-3 realiam darbui  
-⚠️ **Galimos teorinės kolizijos** - nors praktikoje labai mažai tikėtinos  
-⚠️ **Nepilnai ištirti kraštiniai atvejai** - pvz., specifinės simbolių sekos  
 
 ---
 
@@ -279,22 +250,3 @@ Net ir žinant salt ir hash'ą, neįmanoma atspėti pradinio teksto be brute-for
   - 4 state'ai su skirtingomis transformacijomis
   - Bit rotacijos ir XOR operacijos
   - Mix funkcija avalanche efektui
-
----
-
-## Paleidimo Instrukcijos
-
-### 1. Sukurti testinį failą:
-```bash
-echo "Lietuva" > test.txt
-```
-
-### 2. Hash'inti:
-```bash
-./hash_generator test.txt
-```
-
-### 3. Paleisti visus testus:
-```bash
-./hash_tester > results.txt
-```
