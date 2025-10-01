@@ -152,6 +152,8 @@ Testavimas atliekamas su atsitiktiniais string'ais. Kiekvienas testas kartojamas
 
 **Algoritmo sudėtingumas:** O(n), kur n - įvedimo ilgis.
 
+<img width="823" height="520" alt="Screenshot 2025-10-01 233619" src="https://github.com/user-attachments/assets/c46b2d9b-d64f-4eab-a0ff-7fa4bda14d8f" />
+
 ---
 
 ### 4. Kolizijų Paieška
@@ -183,7 +185,7 @@ Testuojama 5000 porų, kurios skiriasi tik vienu simboliu viduryje string'o.
 | Vidutinis skirtumas | 128.0 | 
 
 
-**⭐ Idealus rezultatas:** ~128 bitai (50% bitų pasikeičia)
+**Idealus rezultatas:** ~128 bitai (50% bitų pasikeičia)
 
 #### Hex lygmeniu (iš 64 hex simbolių):
 
