@@ -9,10 +9,10 @@
 #include <map>
 #include <cmath>
 #include <vector>
+#include <algorithm>
 
 using namespace std;
 
-// Hash funkcija (ta pati kaip hash_generator.cpp)
 class CustomHash {
 private:
     static const uint64_t INIT_A = 0x428a2f98d728ae22ULL;

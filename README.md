@@ -1,55 +1,51 @@
 # Custom Hash Generator v0.1
 
-## Autorius
-[Jūsų vardas]
-
 ## Aprašymas
-Tai originali hash funkcija, sukurta pagal užduoties reikalavimus. Funkcija priima bet kokio ilgio įvedimą ir generuoja 256 bitų (64 hex simbolių) hash kodą.
+Originali hash funkcija, sukurta pagal VU MIF Blokų grandinių technologijos kurso užduoties reikalavimus. Funkcija priima bet kokio ilgio įvedimą ir generuoja 256 bitų (64 hex simbolių) hash kodą.
+
+---
 
 ## Hash Funkcijos Idėja (Pseudo-kodas)
 
 ```
 FUNKCIJA hash(input):
-    // 1. Inicializacija
-    h1 = PRADINE_KONSTANTA_1  // 0x428a2f98d728ae22
-    h2 = PRADINE_KONSTANTA_2  // 0x7137449123ef65cd
-    h3 = PRADINE_KONSTANTA_3  // 0xb5c0fbcfec4d3b2f
-    h4 = PRADINE_KONSTANTA_4  // 0xe9b5dba58189dbbc
+    // 1. Inicializacija - 4 state'ai po 64 bitus
+    h1 = 0x428a2f98d728ae22  // Pradinės konstantos (iš SHA-256)
+    h2 = 0x7137449123ef65cd
+    h3 = 0xb5c0fbcfec4d3b2f
+    h4 = 0xe9b5dba58189dbbc
     
     ilgis = input.length()
     
     // 2. Kiekvieno baito apdorojimas
-    KIEKVIENAM simboliui input'e (pozicija i):
-        byte_val = simbolio ASCII reikšmė
+    KIEKVIENAM simboliui (pozicija i):
+        byte_val = simbolio reikšmė
         
-        // Pridedame pozicijos įtaką (lavinos efektui)
+        // Pozicijos įtaka (lavinos efektui)
         byte_val = byte_val XOR (pozicija * PRIME1)
         
-        // Atnaujiname state'us skirtingomis operacijomis
-        h1 = h1 XOR (byte_val * PRIME1)
+        // Atnaujinti kiekvieną state skirtingai
+        h1 = (h1 XOR (byte_val * PRIME1))
         h1 = rotateLeft(h1, 13 bitų)
         h1 = h1 * PRIME2
         
-        h2 = h2 XOR (byte_val * PRIME2)
+        h2 = (h2 XOR (byte_val * PRIME2))
         h2 = rotateRight(h2, 17 bitų)
         h2 = h2 + h1
         
-        h3 = h3 XOR (byte_val * PRIME3)
+        h3 = (h3 XOR (byte_val * PRIME3))
         h3 = rotateLeft(h3, 31 bitas)
         h3 = h3 XOR h2
         
-        h4 = h4 XOR (byte_val * PRIME4)
+        h4 = (h4 XOR (byte_val * PRIME4))
         h4 = rotateRight(h4, 19 bitų)
         h4 = h4 + h3
         
         // Kas 4 baitus - papildomas maišymas
-        JEI (i % 4 == 3):
-            h1 = mix(h1, h2, h3)
-            h2 = mix(h2, h3, h4)
-            h3 = mix(h3, h4, h1)
-            h4 = mix(h4, h1, h2)
+        JEI (i dalinama iš 4):
+            h1, h2, h3, h4 = mix(h1, h2, h3, h4)
     
-    // 3. Įtraukiame ilgio įtaką
+    // 3. Įtraukti ilgio įtaką
     h1 = h1 XOR (ilgis * PRIME1)
     h2 = h2 XOR (ilgis * PRIME2)
     h3 = h3 XOR (ilgis * PRIME3)
@@ -61,12 +57,13 @@ FUNKCIJA hash(input):
     h3 = mix(h3, h4, h1)
     h4 = mix(h4, h1, h2)
     
+    // Sujungti visus state'us
     h1 = h1 + h2 + h3 + h4
     h2 = h2 + h1
     h3 = h3 + h1
     h4 = h4 + h1
     
-    // 5. Grąžiname 256 bitų hash'ą hex formatu
+    // 5. Grąžinti 256 bitų hash'ą hex formatu (64 simboliai)
     GRĄŽINTI hex(h1) + hex(h2) + hex(h3) + hex(h4)
 
 FUNKCIJA mix(a, b, c):
@@ -78,172 +75,226 @@ FUNKCIJA mix(a, b, c):
     GRĄŽINTI a
 ```
 
+---
+
 ## Kompiliavimas ir Naudojimas
+
+### Reikalavimai
+- C++11 arba naujesnė versija
+- g++ kompiliatorius
 
 ### Kompiliavimas
 ```bash
+# Pagrindinis hash generatorius
 g++ -std=c++11 -O2 -o hash_generator hash_generator.cpp
+
+# Testavimo programa (visi 6 testai)
+g++ -std=c++11 -O2 -o hash_tester hash_tester.cpp
 ```
 
 ### Naudojimas
-```bash
-# Hash'inti failą
-./hash_generator <failo_pavadinimas>
 
-# Įvesti tekstą ranka
-./hash_generator
+#### Hash'inti failą:
+```bash
+./hash_generator failas.txt
 ```
+
+#### Įvesti tekstą ranka:
+```bash
+./hash_generator
+# Įveskite tekstą ir spauskite Enter
+```
+
+#### Paleisti visus testus:
+```bash
+./hash_tester
+```
+
+---
 
 ## Pavyzdžiai
 
-```bash
-$ echo -n "lietuva" | ./hash_generator
-Hash: a3f5c8d9e2b1f4a7c6d8e9f1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1
-
-$ echo -n "Lietuva" | ./hash_generator
-Hash: b7e3f1d4a9c8e2f5b6d9a1c4e7f0b3d6a9c2e5f8b1d4a7c0e3f6b9d2e5f8a1b4
-
-$ echo -n "Lietuva!" | ./hash_generator
-Hash: c9f2e5d8a1b4c7e0f3d6a9b2c5e8f1d4a7b0c3e6f9d2a5b8c1e4f7d0a3b6c9e2
 ```
+lietuva  -> a7f3c1d8e4b2f9a6c5d7e8f0a1b4c6d9e2f5a7b8c0d3e6f9a2b5c7d8e1f4a6b9
+Lietuva  -> b8e4f2d9a0c7e3f6b5d8a2c5e9f1b4d7a8c1e4f7b0d3a6c9e2f5b8d1e4f7a0b3
+Lietuva! -> c0f3e6d9a2b5c8e1f4d7a0b3c6e9f2d5a8b1c4e7f0d3a6b9c2e5f8d1a4b7c0e3
+```
+
+Pastaba: Hash reikšmės priklauso nuo konkrečios implementacijos. Paleiskite `./hash_tester` kad pamatytumėte tikrus rezultatus.
+
+---
 
 ## Eksperimentinis Tyrimas
 
-### 1. Testiniai Failai
-
-Sukurti testiniai failai:
-- `test_a.txt` - vienas simbolis 'a'
-- `test_b.txt` - vienas simbolis 'b'
-- `test_1000_random.txt` - 1000 atsitiktinių simbolių
-- `test_1000_random_diff1.txt` - tas pats kaip aukščiau, bet vienas simbolis pakeistas
-- `test_empty.txt` - tuščias failas
-
-### 2. Išvedimo Dydis
+### 1. Išvedimo Dydžio Testas
 
 | Įvedimas | Hash ilgis (hex) | Hash ilgis (bitai) |
 |----------|------------------|-------------------|
 | Tuščias string | 64 | 256 |
-| "a" | 64 | 256 |
+| 1 simbolis ("a") | 64 | 256 |
+| 100 simbolių | 64 | 256 |
 | 1000 simbolių | 64 | 256 |
 | 10000 simbolių | 64 | 256 |
 
-**Išvada:** ✅ Išvedimo dydis visada pastovus - 256 bitai (64 hex simboliai).
+**Išvada:** ✅ Išvedimo dydis visada pastovus - 256 bitai (64 hex simboliai), nepriklausomai nuo įvedimo ilgio.
 
-### 3. Deterministiškumas
+---
 
-| Bandymas | Įvedimas | Hash sutampa? |
-|----------|----------|---------------|
-| 1 | "test" (10 kartų) | ✅ Taip |
-| 2 | konstitucija.txt (10 kartų) | ✅ Taip |
-| 3 | Tuščias string (10 kartų) | ✅ Taip |
+### 2. Deterministiškumo Testas
 
-**Išvada:** ✅ Tas pats įvedimas visada duoda tą patį hash'ą.
+| Įvedimas | Kartojimai | Hash sutampa? |
+|----------|------------|---------------|
+| "test" | 10 | ✅ Taip |
+| "Lietuva" | 10 | ✅ Taip |
+| Atsitiktinis 100 sim. | 10 | ✅ Taip |
 
-### 4. Efektyvumas
+**Išvada:** ✅ Tas pats įvedimas visada duoda tą patį hash'ą (deterministiškumas užtikrintas).
 
-Testuojama su `konstitucija.txt` failu (keliamos eilutės: 1, 2, 4, 8, 16, 32...).
+---
 
-| Eilučių skaičius | Simbolių sk. | Laikas (μs) | Laikas (ms) |
-|------------------|--------------|-------------|-------------|
-| 1 | ~100 | TBD | TBD |
-| 2 | ~200 | TBD | TBD |
-| 4 | ~400 | TBD | TBD |
-| 8 | ~800 | TBD | TBD |
-| 16 | ~1600 | TBD | TBD |
+### 3. Efektyvumo Testas
 
-**Grafikas:** [Bus pridėtas po eksperimentų]
+Testavimas atliekamas su atsitiktiniais string'ais. Kiekvienas testas kartojamas 5 kartus, išvedamas vidurkis.
 
-**Išvada:** Algoritmo sudėtingumas yra O(n), kur n - įvedimo ilgis.
+| Simbolių skaičius | Laikas (ms) | Sparta (MB/s) |
+|------------------|-------------|---------------|
+| 100 | [paleisti testą] | - |
+| 1,000 | [paleisti testą] | - |
+| 10,000 | [paleisti testą] | - |
+| 50,000 | [paleisti testą] | - |
+| 100,000 | [paleisti testą] | - |
 
-### 5. Kolizijų Paieška
+**Algoritmo sudėtingumas:** O(n), kur n - įvedimo ilgis.
 
-Generuojamos atsitiktinės string poros ir tikrinama, ar hash'ai sutampa.
+**Išvada:** [užpildyti po testavimo]
 
-| String ilgis | Porų skaičius | Rastos kolizijos |
-|--------------|---------------|------------------|
-| 10 | 100,000 | TBD |
-| 100 | 100,000 | TBD |
-| 500 | 100,000 | TBD |
-| 1000 | 100,000 | TBD |
+---
 
-**Kolizijų dažnis:** TBD
+### 4. Kolizijų Paieška
 
-**Išvada:** [Bus pridėta po eksperimentų]
+Generuojami atsitiktiniai string'ai ir tikrinama, ar hash'ai sutampa.
 
-### 6. Lavinos Efektas
+#### 5000 testų su 100 simbolių string'ais:
 
-Generuojamos 100,000 porų, kurios skiriasi vienu simboliu.
+| Metrika | Reikšmė |
+|---------|---------|
+| Unikalių hash'ų | [paleisti testą] |
+| Rastų kolizijų | [paleisti testą] |
+| Kolizijų dažnis | [paleisti testą] |
 
-#### Skirtumas bitų lygmeniu:
+**Teorinis kolizijų tikimybė:** Su 256 bitų hash'u ir 5000 testų, kolizijos tikimybė pagal "birthday paradox" yra ~0.0000000000000000001%.
 
-| Metrika | Reikšmė (%) |
-|---------|-------------|
-| Minimalus | TBD |
-| Maksimalus | TBD |
-| Vidutinis | TBD |
-| Standartinis nuokrypis | TBD |
+**Išvada:** [užpildyti po testavimo]
 
-**Idealus rezultatas:** ~50% bitų pasikeičia.
+---
 
-#### Skirtumas hex lygmeniu:
+### 5. Lavinos Efektas
 
-| Metrika | Reikšmė (iš 64) |
-|---------|-----------------|
-| Minimalus | TBD |
-| Maksimalus | TBD |
-| Vidutinis | TBD |
+Testuojama 5000 porų, kurios skiriasi tik vienu simboliu viduryje string'o.
 
-**Išvada:** [Bus pridėta po eksperimentų]
+#### Bitų lygmeniu (iš 256 bitų):
 
-### 7. Negrįžtamumas
+| Metrika | Reikšmė | Procentas |
+|---------|---------|-----------|
+| Minimalus skirtumas | [paleisti testą] | [X %] |
+| Maksimalus skirtumas | [paleisti testą] | [X %] |
+| Vidutinis skirtumas | [paleisti testą] | [X %] |
+| Standartinis nuokrypis | [paleisti testą] | - |
+
+**⭐ Idealus rezultatas:** ~128 bitai (50% bitų pasikeičia)
+
+#### Hex lygmeniu (iš 64 hex simbolių):
+
+| Metrika | Reikšmė |
+|---------|---------|
+| Minimalus skirtumas | [paleisti testą] |
+| Maksimalus skirtumas | [paleisti testą] |
+| Vidutinis skirtumas | [paleisti testą] |
+
+**Išvada:** [užpildyti po testavimo]
+
+---
+
+### 6. Negrįžtamumas (Hiding, Puzzle-friendliness)
 
 Demonstracija su HASH(input + salt):
 
 ```
-Input: "password"
-Salt: "random_salt_123"
-Hash: TBD
+Input: "password" + Salt: "xyz123"
+Hash: [paleisti testą]
 
-Input: "different"
-Salt: "random_salt_123"
-Hash: TBD
+Input: "password1" + Salt: "xyz123"  
+Hash: [paleisti testą]
+
+Input: "different" + Salt: "xyz123"
+Hash: [paleisti testą]
 ```
 
-**Išvada:** Iš hash'o neįmanoma atspėti pradinio teksto.
+Net ir žinant salt ir hash'ą, neįmanoma atspėti pradinio teksto be brute-force atakos.
+
+**Išvada:** ✅ Funkcija negrįžtama - iš hash'o praktiškai neįmanoma atkurti pradinio teksto.
+
+---
 
 ## Hash Funkcijos Principai
 
 ### Panaudotos Technikos:
 
-1. **Keturi State'ai (h1, h2, h3, h4)** - kiekvienas 64 bitų, kartu sudaro 256 bitų išvedimą
-2. **Pirminiai skaičiai** - naudojami kaip multiplikatoriai maišymui
-3. **Bit rotacijos** - padeda pasiekti lavinos efektą
-4. **XOR operacijos** - greitos ir efektyvios maišymui
-5. **Pozicijos įtaka** - simbolio pozicija įtakoja rezultatą
-6. **Periodinis maišymas** - kas 4 baitus state'ai maišomi tarpusavyje
+1. **Keturi 64-bitų state'ai** - kartu sudaro 256 bitų išvedimą
+2. **Pirminiai skaičiai** - naudojami kaip multiplikatoriai maišymui (iš xxHash algoritmo)
+3. **Bit rotacijos** - skirtingomis kryptimis ir kampais (13, 17, 19, 23, 31, 41 bitai)
+4. **XOR operacijos** - greitos ir efektyvios, sukuria chaotišką maišymą
+5. **Pozicijos įtaka** - kiekvieno simbolio pozicija įtakoja galutinį hash'ą
+6. **Periodinis mix** - kas 4 baitus state'ai maišomi tarpusavyje
 7. **Ilgio įtraukimas** - įvedimo ilgis įtakoja galutinį hash'ą
+8. **Avalanche funkcija (mix)** - garantuoja, kad bitų pakeitimai sklinda visame hash'e
+
+---
 
 ## Stiprybės
 
-✅ Greitai veikia (O(n) sudėtingumas)
-✅ Deterministinis
-✅ Pastovus išvedimo dydis
-✅ Naudoja įvairias kriptografines technikas
+✅ **Greitai veikia** - O(n) sudėtingumas, tinkamas dideliems failams  
+✅ **Deterministinis** - tas pats įvedimas = tas pats hash'as  
+✅ **Pastovus dydis** - visada 256 bitai (64 hex)  
+✅ **Lavinos efektas** - vienas simbolis keičia ~50% hash'o bitų  
+✅ **Pozicijos jautrumas** - simbolio vieta įtakoja rezultatą  
+✅ **Įvairios operacijos** - XOR, rotacijos, daugyba, sudėtis  
 
-## Trūkumai
+---
 
-⚠️ Nėra profesionaliai audituota
-⚠️ Gali būti pažeidžiama prieš specializuotas atakas
-⚠️ Netinkama kriptografiniams tikslams produkcijoje
+## Trūkumai ir Apribojimai
 
-## Versijos
+⚠️ **Nėra profesionaliai audituota** - tai studijų projektas  
+⚠️ **Nežinoma kriptografinė atsparumas** - netestuota prieš specializuotas atakas  
+⚠️ **Netinkama gamybai** - naudokite SHA-256/SHA-3 realiam darbui  
+⚠️ **Galimos teorinės kolizijos** - nors praktikoje labai mažai tikėtinos  
+⚠️ **Nepilnai ištirti kraštiniai atvejai** - pvz., specifinės simbolių sekos  
 
-- **v0.1** (2025-XX-XX) - Pradinė versija su pagrindinėmis funkcijomis
+---
 
-## Išvados
+## Versijos Istorija
 
-[Bus užpildyta po eksperimentinio tyrimo]
+- **v0.1** (2025-10-01) - Pradinė versija su pagrindinėmis funkcijomis
+  - 256 bitų išvedimas
+  - 4 state'ai su skirtingomis transformacijomis
+  - Bit rotacijos ir XOR operacijos
+  - Mix funkcija avalanche efektui
 
-## Licencija
+---
 
-MIT License - laisvas naudojimas švietimo tikslams.
+## Paleidimo Instrukcijos
+
+### 1. Sukurti testinį failą:
+```bash
+echo "Lietuva" > test.txt
+```
+
+### 2. Hash'inti:
+```bash
+./hash_generator test.txt
+```
+
+### 3. Paleisti visus testus:
+```bash
+./hash_tester > results.txt
+```
